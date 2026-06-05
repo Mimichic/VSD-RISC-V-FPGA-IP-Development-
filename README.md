@@ -131,17 +131,10 @@ Larger view of the complete disassembly output for the default compilation.
 
 ![RISC-V Objdump Larger View](./snapshots/larger_riscv_instructions.png)
 
----
-
-### Step 8 — Objdump Without Pipe (Default)
-
-Alternate view of the objdump output without piping, showing raw terminal output.
-
-![Objdump Pipeless](./snapshots/pipeless_command.png)
 
 ---
 
-### Step 9 — `main` Section — Default Compilation (~15 Instructions)
+### Step 8 — `main` Section — Default Compilation (~15 Instructions)
 
 The `main` function in default mode contains approximately **15 instructions**, with the full loop structure present in the assembly.
 
@@ -149,7 +142,7 @@ The `main` function in default mode contains approximately **15 instructions**, 
 
 ---
 
-### Step 10 — RISC-V Cross-Compilation with `-Ofast`
+### Step 9 — RISC-V Cross-Compilation with `-Ofast`
 
 ```bash
 riscv64-linux-musl-gcc -Ofast -mabi=lp64d -march=rv64g -o sum_to_n.o sum_to_n.c
@@ -159,7 +152,7 @@ riscv64-linux-musl-gcc -Ofast -mabi=lp64d -march=rv64g -o sum_to_n.o sum_to_n.c
 
 ---
 
-### Step 11 — Full Objdump Output with `-Ofast`
+### Step 10 — Full Objdump Output with `-Ofast`
 
 Complete disassembly after `-Ofast` compilation showing optimized sections.
 
@@ -167,7 +160,7 @@ Complete disassembly after `-Ofast` compilation showing optimized sections.
 
 ---
 
-### Step 12 — `main` Section — `-Ofast` Compilation (~12 Instructions)
+### Step 11 — `main` Section — `-Ofast` Compilation (~12 Instructions)
 
 With `-Ofast`, the `main` function is reduced to approximately **12 instructions**, demonstrating the compiler's ability to generate more compact code.
 
