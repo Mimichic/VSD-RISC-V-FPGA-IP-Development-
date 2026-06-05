@@ -1,10 +1,12 @@
-# FPGA IP Design Internship — Task 1
+# FPGA IP Design Internship
 
 **VSD (VLSI System Design) FPGA IP Internship**
 
 ---
 
 ## Objective
+
+# Task 1
 
 Write a C program, compile it using standard GCC, then cross-compile it for the RISC-V architecture using `riscv64-linux-musl-gcc`. Disassemble the object file using `objdump` and observe the generated RISC-V assembly instructions. Compare instruction counts under normal and `-Ofast` optimization.
 
