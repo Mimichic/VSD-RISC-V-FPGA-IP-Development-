@@ -58,79 +58,129 @@ int main(){
 
 ---
 
-## Compilation Steps
+## Step-by-Step Walkthrough
 
-### Step 1 — Native GCC Compilation and Execution
+### Step 1 — Creating the C File
+
+Working directory confirmed and `leafpad` editor launched to create `sum_to_n.c`.
+
+![Creating C File](./snapshots/creation_c_file.png)
+
+---
+
+### Step 2 — C Source Code (n=5)
+
+Initial version of the program summing 1 to 5.
+
+![C Source n=5](./snapshots/sum_c_file.png)
+
+---
+
+### Step 3 — Native GCC Compilation and Output (n=5)
 
 ```bash
 gcc sum_to_n.c
 ./a.out
 ```
 
-**Output:**
-```
-The sum of numbers is: 15        # for n=5
-The sum of numbers from 1 to 100 is: 5050   # for n=100
-```
+**Output:** `The sum of numbers is: 15`
+
+![GCC Result n=5](./snapshots/sum_result.png)
 
 ---
 
-### Step 2 — RISC-V Cross-Compilation (Default)
+### Step 4 — C Source Code Updated (n=100)
+
+Program updated to sum from 1 to 100 with improved `printf` format.
+
+![C Source n=100](./snapshots/sum_c_100.png)
+
+---
+
+### Step 5 — Native GCC Compilation and Output (n=100)
+
+```bash
+gcc sum_to_n.c
+./a.out
+```
+
+**Output:** `The sum of numbers from 1 to 100 is: 5050`
+
+![GCC Result n=100](./snapshots/sum_c_100_result.png)
+
+---
+
+### Step 6 — RISC-V Cross-Compilation (Default, No Optimization)
 
 ```bash
 riscv64-linux-musl-gcc -mabi=lp64d -march=rv64g -o sum_to_n.o sum_to_n.c
 riscv64-linux-musl-objdump -d sum_to_n.o
 ```
 
-The disassembly reveals the `.plt`, `_start`, `_start_c`, and `main` sections with the full loop structure intact in the generated assembly.
+Full disassembly output showing `.plt`, `_start`, `_start_c`, and `main` sections.
+
+![RISC-V Objdump Default](./snapshots/riscv-instructions.png)
 
 ---
 
-### Step 3 — RISC-V Cross-Compilation with `-Ofast`
+### Step 7 — Full RISC-V Objdump Output (Default)
+
+Larger view of the complete disassembly output for the default compilation.
+
+![RISC-V Objdump Larger View](./snapshots/larger_riscv_instructions.png)
+
+---
+
+### Step 8 — Objdump Without Pipe (Default)
+
+Alternate view of the objdump output without piping, showing raw terminal output.
+
+![Objdump Pipeless](./snapshots/pipeless_command.png)
+
+---
+
+### Step 9 — `main` Section — Default Compilation (~15 Instructions)
+
+The `main` function in default mode contains approximately **15 instructions**, with the full loop structure present in the assembly.
+
+![Main 15 Instructions](./snapshots/main_command_w_fifteen_instructions.png)
+
+---
+
+### Step 10 — RISC-V Cross-Compilation with `-Ofast`
 
 ```bash
 riscv64-linux-musl-gcc -Ofast -mabi=lp64d -march=rv64g -o sum_to_n.o sum_to_n.c
-riscv64-linux-musl-objdump -d sum_to_n.o
 ```
+
+![Ofast Compile Command](./snapshots/Ofast_instruction.png)
 
 ---
 
-## Observation — Instruction Count Comparison
+### Step 11 — Full Objdump Output with `-Ofast`
+
+Complete disassembly after `-Ofast` compilation showing optimized sections.
+
+![Ofast Full Objdump](./snapshots/ofast_command_objdump.png)
+
+---
+
+### Step 12 — `main` Section — `-Ofast` Compilation (~12 Instructions)
+
+With `-Ofast`, the `main` function is reduced to approximately **12 instructions**, demonstrating the compiler's ability to generate more compact code.
+
+![Ofast 12 Instructions](./snapshots/ofast_12_instructions_only.png)
+
+---
+
+## Key Observation — Instruction Count Comparison
 
 | Compilation Mode | Instructions in `main` |
 |-----------------|------------------------|
 | Default (no optimization) | ~15 instructions |
 | `-Ofast` optimization | ~12 instructions |
 
-The `-Ofast` flag reduces the instruction count in the `main` section from approximately **15 to 12**, demonstrating how aggressive compiler optimization generates more compact and efficient RISC-V assembly code.
-
----
-
-## Snapshots
-
-### C Source File
-![C Source File](./snapshots/sum_c_file.png)
-
-### Native GCC Compilation & Output (n=5)
-![GCC Compilation Result](./snapshots/sum_result.png)
-
-### Native GCC Compilation & Output (n=100)
-![GCC Compilation Result n=100](./snapshots/sum_c_100_result.png)
-
-### RISC-V Cross-Compilation Command (`-Ofast`)
-![Ofast Compile Command](./snapshots/Ofast_instruction.png)
-
-### RISC-V Objdump — Default Compilation (main section, ~15 instructions)
-![Main 15 instructions](./snapshots/main_command_w_fifteen_instructions.png)
-
-### RISC-V Objdump — With `-Ofast` (main section, ~12 instructions)
-![Ofast 12 instructions](./snapshots/ofast_12_instructions_only.png)
-
-### Full Objdump Output — Default
-![RISC-V Instructions](./snapshots/riscv-instructions.png)
-
-### Full Objdump Output — `-Ofast`
-![Ofast full objdump](./snapshots/ofast_command_objdump.png)
+The `-Ofast` flag reduces the instruction count in the `main` section from approximately **15 to 12**. This demonstrates how aggressive compiler optimization generates more compact and efficient RISC-V assembly, eliminating redundant operations and improving overall code density.
 
 ---
 
@@ -147,17 +197,16 @@ fpga-ip-internship/
     ├── sum_result.png
     ├── sum_c_100.png
     ├── sum_c_100_result.png
-    ├── Ofast_instruction.png
     ├── riscv-instructions.png
     ├── larger_riscv_instructions.png
-    ├── main_command_w_fifteen_instructions.png
     ├── pipeless_command.png
-    ├── ofast_12_instructions_only.png
-    └── ofast_command_objdump.png
+    ├── main_command_w_fifteen_instructions.png
+    ├── Ofast_instruction.png
+    ├── ofast_command_objdump.png
+    └── ofast_12_instructions_only.png
 ```
 
 ---
-
 
 ## Author
 
