@@ -15,9 +15,9 @@ This repository documents the hands-on tasks completed as part of the VSD FPGA I
 | Tool | Purpose |
 |------|---------|
 | `gcc` | Native C compilation on host machine |
-| `riscv64-linux-unknown-gcc` | Cross-compiler targeting RISC-V 64-bit (musl libc) |
+| `riscv64-linux-musl-gcc` | Cross-compiler targeting RISC-V 64-bit (musl libc) |
 | `riscv64-unknown-linux-gnu-gcc` | Cross-compiler targeting RISC-V 64-bit (GNU libc, static) |
-| `riscv64-linux-unknown-objdump` | Disassembler for musl-compiled RISC-V binaries |
+| `riscv64-linux-musl-objdump` | Disassembler for musl-compiled RISC-V binaries |
 | `spike` | RISC-V ISA simulator for functional verification |
 | `pk` | Proxy kernel used alongside Spike for syscall handling |
 | `leafpad` | Text editor used to write C source files |
@@ -44,14 +44,14 @@ gcc <source>.c
 
 ### RISC-V Cross-Compilation (musl libc)
 ```bash
-riscv64-linux-unknown-gcc -mabi=lp64d -march=rv64g -o <output>.o <source>.c
-riscv64-linux-unknown-objdump -d <output>.o
+riscv64-linux-musl-gcc -mabi=lp64d -march=rv64g -o <output>.o <source>.c
+riscv64-linux-musl-objdump -d <output>.o
 ```
 
 ### RISC-V Cross-Compilation with Optimisation (musl libc)
 ```bash
-riscv64-linux-unknown-gcc -O1 -mabi=lp64d -march=rv64g -o <output>.o <source>.c
-riscv64-linux-unknown-gcc -Ofast -mabi=lp64d -march=rv64g -o <output>.o <source>.c
+riscv64-linux-musl-gcc -O1 -mabi=lp64d -march=rv64g -o <output>.o <source>.c
+riscv64-linux-musl-gcc -Ofast -mabi=lp64d -march=rv64g -o <output>.o <source>.c
 ```
 
 ### RISC-V Cross-Compilation with Spike Simulation (GNU libc, static)
@@ -116,7 +116,15 @@ int main(){
 
 ## Step-by-Step Walkthrough
 
-### Step 1 — C Source Code (n=5)
+### Step 1 — Working Directory and File Creation
+
+Working directory confirmed and `leafpad` editor launched to create `sum_to_n.c`.
+
+![Creating C File](./task1/creation_c_file.png)
+
+---
+
+### Step 2 — C Source Code (n=5)
 
 Initial version of the program summing integers from 1 to 5, written in `leafpad`.
 
@@ -124,7 +132,28 @@ Initial version of the program summing integers from 1 to 5, written in `leafpad
 
 ---
 
-### Step 2 — Native GCC Compilation and Output
+### Step 3 — Native GCC Compilation and Output (n=5)
+
+```bash
+gcc sum_to_n.c
+./a.out
+```
+
+**Output:** `The sum of numbers is: 15`
+
+![GCC Result n=5](./task1/sum_result.png)
+
+---
+
+### Step 4 — C Source Code Updated (n=100)
+
+Program updated to sum from 1 to 100 with improved `printf` format.
+
+![C Source n=100](./task1/sum_c_100.png)
+
+---
+
+### Step 5 — Native GCC Compilation and Output (n=100)
 
 ```bash
 gcc sum_to_n.c
@@ -133,24 +162,88 @@ gcc sum_to_n.c
 
 **Output:** `The sum of numbers from 1 to 100 is: 5050`
 
-![GCC Result](./task1/sum_to_n_gcc.png)
+![GCC Result n=100](./task1/sum_c_100_result.png)
 
 ---
 
-### Step 3 — RISC-V Cross-Compilation and Objdump (Default, No Optimisation)
+### Step 6 — RISC-V Cross-Compilation (Default, No Optimisation)
 
 ```bash
 riscv64-linux-musl-gcc -mabi=lp64d -march=rv64g -o sum_to_n.o sum_to_n.c
 riscv64-linux-musl-objdump -d sum_to_n.o
 ```
 
-The `main` section with no optimisation contains the full loop structure in assembly.
+Full disassembly output showing `.plt`, `_start`, `_start_c`, and `main` sections.
 
-![Objdump Default main](./task1/main_file_sum_to_n.png)
+![RISC-V Objdump Default](./task1/riscv-instructions.png)
 
 ---
 
-### Step 4 — RISC-V Objdump with `-O1`
+### Step 7 — Full RISC-V Objdump Output (Default)
+
+Larger view of the complete disassembly output for the default compilation.
+
+![RISC-V Objdump Larger View](./task1/larger_riscv_instructions.png)
+
+---
+
+### Step 8 — Objdump Without Pipe (Default)
+
+Alternate view of the objdump output without piping, showing raw terminal output.
+
+![Objdump Pipeless](./task1/pipeless_command.png)
+
+---
+
+### Step 9 — `main` Section — Default Compilation (~15 Instructions)
+
+The `main` function in default mode contains approximately **15 instructions**, with the full loop structure present in the assembly.
+
+![Main 15 Instructions](./task1/main_command_w_fifteen_instructions.png)
+
+---
+
+### Step 10 — RISC-V Cross-Compilation with `-Ofast`
+
+```bash
+riscv64-linux-musl-gcc -Ofast -mabi=lp64d -march=rv64g -o sum_to_n.o sum_to_n.c
+```
+
+![Ofast Compile Command](./task1/Ofast_instruction.png)
+
+---
+
+### Step 11 — Full Objdump Output with `-Ofast`
+
+Complete disassembly after `-Ofast` compilation showing optimised sections.
+
+![Ofast Full Objdump](./task1/ofast_command_objdump.png)
+
+---
+
+### Step 12 — `main` Section — `-Ofast` Compilation (~12 Instructions)
+
+With `-Ofast`, the `main` function is reduced to approximately **12 instructions**.
+
+![Ofast 12 Instructions](./task1/ofast_12_instructions_only.png)
+
+---
+
+### Step 13 — Spike Simulation (`sum_to_n`)
+
+```bash
+riscv64-unknown-linux-gnu-gcc -O1 -march=rv64g -mabi=lp64d -static -o sum_to_n.o sum_to_n.c
+spike $(which pk) sum_to_n.o
+spike -d $(which pk) sum_to_n.o
+```
+
+Spike confirms correct execution and allows stepping through individual RISC-V instructions with register inspection.
+
+![Spike Simulation sum_to_n](./task1/sum_to_n_instructions_spike.png)
+
+---
+
+### Step 14 — Objdump `main` with `-O1`
 
 ```bash
 riscv64-linux-musl-gcc -O1 -mabi=lp64d -march=rv64g -o sum_to_n.o sum_to_n.c
@@ -163,17 +256,22 @@ With `-O1`, the `main` section is visibly reduced in instruction count.
 
 ---
 
-### Step 5 — Spike Simulation (`sum_to_n`)
+### Step 15 — Native GCC Compilation (n=100, final run)
 
 ```bash
-riscv64-unknown-linux-gnu-gcc -O1 -march=rv64g -mabi=lp64d -static -o sum_to_n.o sum_to_n.c
-spike $(which pk) sum_to_n.o
-spike -d $(which pk) sum_to_n.o
+gcc sum_to_n.c
+./a.out
 ```
 
-Spike confirms correct execution and allows stepping through individual RISC-V instructions with register inspection.
+![GCC Final Run](./task1/sum_to_n_gcc.png)
 
-![Spike Simulation sum_to_n](./task1/sum_to_n_instructions_spike.png)
+---
+
+### Step 16 — `main` Section — No Optimisation (full view)
+
+The `main` function with no optimisation, showing full loop body in assembly (~28 instructions).
+
+![Main No Opt](./task1/main_file_sum_to_n.png)
 
 ---
 
@@ -374,27 +472,26 @@ fpga-ip-internship/
 ├── README.md
 ├── sum_to_n.c
 ├── perceptron.c
-└── snapshots/
-    │
-    ├── # Task 1 — sum_to_n
-    ├── creation_c_file.png
-    ├── sum_c_file.png
-    ├── sum_result.png
-    ├── sum_c_100.png
-    ├── sum_c_100_result.png
-    ├── riscv-instructions.png
-    ├── larger_riscv_instructions.png
-    ├── pipeless_command.png
-    ├── main_command_w_fifteen_instructions.png
-    ├── Ofast_instruction.png
-    ├── ofast_command_objdump.png
-    ├── ofast_12_instructions_only.png
-    ├── sum_to_n_gcc.png
-    ├── main_file_sum_to_n.png
-    ├── objdump_for_sum_to_n.png
-    ├── sum_to_n_instructions_spike.png
-    │
-    └── # Task 2 — perceptron
+│
+├── task1/
+│   ├── creation_c_file.png
+│   ├── sum_c_file.png
+│   ├── sum_result.png
+│   ├── sum_c_100.png
+│   ├── sum_c_100_result.png
+│   ├── riscv-instructions.png
+│   ├── larger_riscv_instructions.png
+│   ├── pipeless_command.png
+│   ├── main_command_w_fifteen_instructions.png
+│   ├── Ofast_instruction.png
+│   ├── ofast_command_objdump.png
+│   ├── ofast_12_instructions_only.png
+│   ├── sum_to_n_gcc.png
+│   ├── main_file_sum_to_n.png
+│   ├── objdump_for_sum_to_n.png
+│   └── sum_to_n_instructions_spike.png
+│
+└── task2/
     ├── perceptron_code.png
     ├── ml_commands.png
     ├── output_for_perceptron_code.png
@@ -408,14 +505,6 @@ fpga-ip-internship/
     └── spike_simulation_Ofast.png
 ```
 
----
-
-## References
-
-- [C Based Lab Video](https://1drv.ms/v/s!Ai4WW_jutenghrYpUsL_MLKJDSLVyg?e=gdA9TW)
-- [RISC-V Based Lab Video](https://1drv.ms/v/s!Ai4WW_jutengg7dbp9XlZXjJmxogBw?e=ycX4fO)
-
----
 
 ## Author
 
