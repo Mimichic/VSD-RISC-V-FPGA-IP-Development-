@@ -239,7 +239,7 @@ spike -d $(which pk) sum_to_n.o
 
 Spike confirms correct execution and allows stepping through individual RISC-V instructions with register inspection.
 
-![Spike Simulation sum_to_n](./task1/sum_to_n_instructions_spike.png)
+![Spike Simulation sum_to_n](./task2/sum_to_n_instructions_spike.png)
 
 ---
 
@@ -252,7 +252,7 @@ riscv64-linux-musl-objdump -d sum_to_n.o
 
 With `-O1`, the `main` section is visibly reduced in instruction count.
 
-![Objdump O1 main](./task1/objdump_for_sum_to_n.png)
+![Objdump O1 main](./task2/objdump_for_sum_to_n.png)
 
 ---
 
@@ -263,7 +263,7 @@ gcc sum_to_n.c
 ./a.out
 ```
 
-![GCC Final Run](./task1/sum_to_n_gcc.png)
+![GCC Final Run](./task2/sum_to_n_gcc.png)
 
 ---
 
@@ -271,7 +271,7 @@ gcc sum_to_n.c
 
 The `main` function with no optimisation, showing full loop body in assembly (~28 instructions).
 
-![Main No Opt](./task1/main_file_sum_to_n.png)
+![Main No Opt](./task2/main_file_sum_to_n.png)
 
 ---
 
