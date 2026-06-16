@@ -514,41 +514,21 @@ int main(){
 
 ## Step-by-Step Walkthrough
 
-### Step 1 — Codespace Launch and noVNC Desktop
+---
 
-The GitHub Codespace was launched from the forked `vsd-riscv2` repository. The noVNC desktop (port 6080) was accessed to provide a full GUI Linux environment inside the Codespace, running XFCE on Mon 15 Jun. After launch, the pre-installed tools were verified:
+### noVNC Desktop Tasks
 
-```bash
-riscv64-unknown-elf-gcc --version
-spike --help
-iverilog -V
-```
+### Step 1 — noVNC Desktop Launch
 
-Expected output:
-```
-riscv64-unknown-elf-gcc (SiFive GCC 8.3.0-2019.08.0) 8.3.0
-Spike RISC-V ISA Simulator 1.1.1-dev
-```
+The noVNC desktop (port 6080) was accessed inside the Codespace to provide a full GUI Linux environment (XFCE), running on Mon 15 Jun at 13:09.
 
 ![noVNC Desktop](./task3/novnclite.png)
 
 ---
 
-### Step 2 — Codespace Environment and VSD Banner
+### Step 2 — Navigating to `samples/` and Listing Files
 
-The Codespace built successfully. The terminal displays the VSD Squadron FPGA Mini banner on startup, confirming the post-start scripts executed correctly. The VS Code explorer shows the repository structure including `samples/`, `vsdfpga_labs/`, and `README.md`.
-
-```bash
-cd /workspaces/vsd-riscv2
-```
-
-![Codespace Build and Banner](./task3/bran_out_ut_fpgalabs.png)
-
----
-
-### Step 3 — Listing Files in `samples/` Directory
-
-Navigated to the `samples/` directory and listed all files. The reference programs provided are:
+Inside the noVNC terminal, navigated to the `samples/` directory and listed all files present:
 
 ```bash
 cd /workspaces/vsd-riscv2
@@ -566,12 +546,80 @@ Files present:
 
 ---
 
-### Step 4 — Cloning `vsdfpga_labs` Repository
+### Step 3 — Compiling and Running `sum1ton.c` (n=9)
 
-Cloned the FPGA labs repository inside the Codespace to validate multi-repository workflow readiness.
+Compiled `sum1ton.c` using the RISC-V cross-compiler and ran it with Spike. Note: `riscv-unknown-elf-gcc` (without `64`) was not found; the correct binary is `riscv64-unknown-elf-gcc`.
 
 ```bash
-cd /workspaces/vsd-riscv2
+riscv64-unknown-elf-gcc -o sum1ton.o sum1ton.c
+spike pk sum1ton.o
+```
+
+**Output:** `Sum from 1 to 9 is 45`
+
+![Spike Run n=9](./task3/spike_commandresult.png)
+
+---
+
+### Step 4 — Viewing and Modifying `sum1ton.c` in gedit
+
+Opened `sum1ton.c` in `gedit` inside the noVNC desktop. Source code with `n=9` is visible. The value of `n` was changed from 9 to 100 and the file saved.
+
+```bash
+gedit sum1ton.c &
+```
+
+![gedit sum1ton.c](./task3/geditsum1ton.png)
+
+---
+
+### Step 5 — Recompile and Run After Modification (n=100)
+
+After modifying `n` to 100, recompiled and re-ran with Spike inside the noVNC terminal.
+
+```bash
+riscv64-unknown-elf-gcc -o sum1ton.o sum1ton.c
+spike pk sum1ton.o
+```
+
+**Output:** `Sum from 1 to 100 is 5050`
+
+![Spike Result n=100](./task3/answrforn=100.png)
+
+---
+
+### Codespace Tasks
+
+### Step 6 — Codespace Launch and VSD Banner
+
+The VS Code Codespace terminal displays the VSD Squadron FPGA Mini banner on startup, confirming post-start scripts executed correctly. The explorer shows `samples/`, `vsdfpga_labs/`, and `README.md`. The README also documents how to launch the noVNC desktop via the PORTS tab (port 6080).
+
+![Codespace Build and Banner](./task3/bran_out[ut_fpgalabs.png)
+
+---
+
+### Step 7 — Spike Execution via VS Code Codespace Terminal
+
+The `spike pk sum1ton.o` command was run in the VS Code Codespace terminal, confirming consistent output. The README above the terminal shows the expected output `Sum from 1 to 9 is 45`, while the actual run with the modified program produces `Sum from 1 to 100 is 5050`.
+
+```bash
+riscv64-unknown-elf-gcc -o sum1ton.o sum1ton.c
+spike pk sum1ton.o
+```
+
+**Output:** `Sum from 1 to 100 is 5050`
+
+![Spike Result Codespace Terminal](./task3/codespaces_block.png)
+
+---
+
+### vsdfpga_labs Tasks
+
+### Step 8 — Cloning `vsdfpga_labs` Repository
+
+Cloned the FPGA labs repository inside the VS Code Codespace terminal.
+
+```bash
 git clone https://github.com/vsdip/vsdfpga_labs.git
 cd vsdfpga_labs
 ```
@@ -582,15 +630,15 @@ Clone completed successfully: 185 objects received, 1.44 MiB transferred.
 
 ---
 
-### Step 5 — Reviewing `vsdfpga_labs` README and Installing the Full Toolchain
+### Step 9 — Reviewing `vsdfpga_labs` README and Toolchain Dependencies
 
-Inspected the `vsdfpga_labs` README to understand the full toolchain setup. The README documents general dependencies, FPGA toolchain (Yosys/NextPNR/IceStorm), and the SiFive RISC-V GCC 8.3.0 installation procedure.
+Inspected the `vsdfpga_labs` README from inside the cloned directory. The README documents general dependencies, FPGA toolchain (Yosys/NextPNR/IceStorm), and the SiFive RISC-V GCC 8.3.0 installation procedure.
 
 ```bash
 cat README.md
 ```
 
-The complete toolchain installation commands as documented:
+The toolchain installation commands as documented:
 
 ```bash
 # General dependencies
@@ -610,65 +658,9 @@ echo 'export PATH=$HOME/riscv_toolchain/riscv64-unknown-elf-gcc-8.3.0-2019.08.0-
 source ~/.bashrc
 ```
 
-> **Note:** As per task instructions, FPGA tools (`yosys`, `nextpnr`, programmers, drivers) were **not installed** at this stage. The README and setup script were reviewed for understanding only. FPGA bring-up will be introduced in later tasks.
+> **Note:** FPGA tools (`yosys`, `nextpnr`, programmers, drivers) were **not installed** at this stage. The README was reviewed for understanding only.
 
-![vsdfpga_labs README](./task3/codespaces_block.png)
-
----
-
-### Step 6 — Compiling and Running the Reference Program (Initial Run, n=9)
-
-Compiled `sum1ton.c` using the RISC-V cross-compiler and ran it with Spike.
-
-```bash
-riscv64-unknown-elf-gcc -o sum1ton.o sum1ton.c
-spike pk sum1ton.o
-```
-
-**Output:** `Sum from 1 to 9 is 45`
-
-Initial run uses the default value `n=9` as provided in the repository. The program compiled and executed correctly on the RISC-V ISA via Spike.
-
-![Spike Command Result n=9](./task3/answrforn_100.png)
-
----
-
-### Step 7 — Modifying `sum1ton.c` and Rerunning (Optional Confidence Task)
-
-Opened `sum1ton.c` in `gedit` inside the noVNC desktop and modified `n` from 9 to 100. Recompiled and re-ran with Spike to verify the change.
-
-```bash
-gedit sum1ton.c &
-riscv64-unknown-elf-gcc -o sum1ton.o sum1ton.c
-spike pk sum1ton.o
-```
-
-**Output:** `Sum from 1 to 100 is 5050`
-
-![gedit sum1ton.c Modified](./task3/geditsum1ton.png)
-
----
-
-### Step 8 — Spike Execution in noVNC Terminal (n=100)
-
-The complete compilation and Spike execution flow confirmed inside the noVNC GUI terminal, showing successful output after modification.
-
-```bash
-riscv64-unknown-elf-gcc -o sum1ton.o sum1ton.c
-spike pk sum1ton.o
-```
-
-**Output:** `Sum from 1 to 100 is 5050`
-
-![Spike Result n=100 in noVNC](./task3/spike_commandresult.png)
-
----
-
-### Step 9 — README Reference (Spike Command and Expected Output)
-
-The `vsd-riscv2` README documents Step 4 as running `spike pk sum1ton.o` with the expected output `Sum from 1 to 9 is 45`. This was followed precisely and verified.
-
-![README Spike Step](./task3/readme_codespaces.png)
+![vsdfpga_labs README](./task3/readme_codespaces.png)
 
 ---
 
@@ -708,6 +700,7 @@ bbl loader
 ************************************************************
 ```
 
+---
 ---
 
 ## References
