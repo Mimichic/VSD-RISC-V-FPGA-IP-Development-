@@ -239,7 +239,7 @@ spike -d $(which pk) sum_to_n.o
 
 Spike confirms correct execution and allows stepping through individual RISC-V instructions with register inspection.
 
-![Spike Simulation sum_to_n](./task1/sum_to_n_instructions_spike.png)
+![Spike Simulation sum_to_n](./task2/sum_to_n_instructions_spike.png)
 
 ---
 
@@ -252,7 +252,7 @@ riscv64-linux-musl-objdump -d sum_to_n.o
 
 With `-O1`, the `main` section is visibly reduced in instruction count.
 
-![Objdump O1 main](./task1/objdump_for_sum_to_n.png)
+![Objdump O1 main](./task2/objdump_for_sum_to_n.png)
 
 ---
 
@@ -263,7 +263,7 @@ gcc sum_to_n.c
 ./a.out
 ```
 
-![GCC Final Run](./task1/sum_to_n_gcc.png)
+![GCC Final Run](./task2/sum_to_n_gcc.png)
 
 ---
 
@@ -271,7 +271,7 @@ gcc sum_to_n.c
 
 The `main` function with no optimisation, showing full loop body in assembly (~28 instructions).
 
-![Main No Opt](./task1/main_file_sum_to_n.png)
+![Main No Opt](./task2/main_file_sum_to_n.png)
 
 ---
 
@@ -461,60 +461,6 @@ spike -d $(which pk) perceptron.o
 Contrary to what might be expected, **`-Ofast` generates significantly more instructions (186) than `-O1` (139)** for the perceptron program. This is because `-Ofast` enables aggressive floating-point loop unrolling and vectorisation — the compiler replicates loop body instructions multiple times to reduce branch overhead and exploit instruction-level parallelism. The perceptron's training loop, which involves repeated floating-point multiply-accumulate operations (`fmul.s`, `fmadd.s`, `fadd.s`), is a prime candidate for this transformation. The result is a larger but potentially faster binary when run on hardware that supports out-of-order or pipelined execution.
 
 This is in contrast to the integer-only `sum_to_n` program, where `-Ofast` reduced instruction count because there were no floating-point operations to unroll.
-
----
-
-## Repository Structure
-
-```
-fpga-ip-internship/
-│
-├── README.md
-├── sum_to_n.c
-├── perceptron.c
-│
-├── task1/
-│   ├── creation_c_file.png
-│   ├── sum_c_file.png
-│   ├── sum_result.png
-│   ├── sum_c_100.png
-│   ├── sum_c_100_result.png
-│   ├── riscv-instructions.png
-│   ├── larger_riscv_instructions.png
-│   ├── pipeless_command.png
-│   ├── main_command_w_fifteen_instructions.png
-│   ├── Ofast_instruction.png
-│   ├── ofast_command_objdump.png
-│   ├── ofast_12_instructions_only.png
-│   ├── sum_to_n_gcc.png
-│   ├── main_file_sum_to_n.png
-│   ├── objdump_for_sum_to_n.png
-│   └── sum_to_n_instructions_spike.png
-│
-├── task2/
-│   ├── perceptron_code.png
-│   ├── ml_commands.png
-│   ├── output_for_perceptron_code.png
-│   ├── commands_objdump_O1.png
-│   ├── objdump_perceptron_O1.png
-│   ├── main_instructions_perceptron_O1.png
-│   ├── end_of_main_O1__to_calculate_instructions_.png
-│   ├── spike_simulation_o1.png
-│   ├── objdump_main_Ofast.png
-│   ├── end_of_main_Ofast__to_calculate_instructions_.png
-│   └── spike_simulation_Ofast.png
-│
-└── task3/
-    ├── novnclite.png
-    ├── bran_out_ut_fpgalabs.png
-    ├── listoffiles.png
-    ├── hitcloning.png
-    ├── codespaces_block.png
-    ├── readme_codespaces.png
-    ├── answrforn_100.png
-    ├── spike_commandresult.png
-    └── geditsum1ton.png
-```
 
 ---
 
@@ -766,10 +712,10 @@ bbl loader
 
 ## References
 
-- [vsd-riscv2 Repository
-- [vsdfpga_labs Repository
-- [C Based Lab Video
-- [RISC-V Based Lab Video
+- vsd-riscv2 Repository
+- vsdfpga_labs Repository
+- C Based Lab Video
+- RISC-V Based Lab Video
 
 ---
 
@@ -777,3 +723,61 @@ bbl loader
 
 **Amishi Singh**
 VSD FPGA IP Design Internship Participant
+
+## Repository Structure
+
+---
+
+## Repository Structure
+
+```
+fpga-ip-internship/
+│
+├── README.md
+├── sum_to_n.c
+├── perceptron.c
+│
+├── task1/
+│   ├── creation_c_file.png
+│   ├── sum_c_file.png
+│   ├── sum_result.png
+│   ├── sum_c_100.png
+│   ├── sum_c_100_result.png
+│   ├── riscv-instructions.png
+│   ├── larger_riscv_instructions.png
+│   ├── pipeless_command.png
+│   ├── main_command_w_fifteen_instructions.png
+│   ├── Ofast_instruction.png
+│   ├── ofast_command_objdump.png
+│   ├── ofast_12_instructions_only.png
+│   ├── sum_to_n_gcc.png
+│   ├── main_file_sum_to_n.png
+│   ├── objdump_for_sum_to_n.png
+│   └── sum_to_n_instructions_spike.png
+│
+├── task2/
+│   ├── perceptron_code.png
+│   ├── ml_commands.png
+│   ├── output_for_perceptron_code.png
+│   ├── commands_objdump_O1.png
+│   ├── objdump_perceptron_O1.png
+│   ├── main_instructions_perceptron_O1.png
+│   ├── end_of_main_O1__to_calculate_instructions_.png
+│   ├── spike_simulation_o1.png
+│   ├── objdump_main_Ofast.png
+│   ├── end_of_main_Ofast__to_calculate_instructions_.png
+│   └── spike_simulation_Ofast.png
+│
+└── task3/
+    ├── novnclite.png
+    ├── bran_out_ut_fpgalabs.png
+    ├── listoffiles.png
+    ├── hitcloning.png
+    ├── codespaces_block.png
+    ├── readme_codespaces.png
+    ├── answrforn_100.png
+    ├── spike_commandresult.png
+    └── geditsum1ton.png
+```
+
+---
