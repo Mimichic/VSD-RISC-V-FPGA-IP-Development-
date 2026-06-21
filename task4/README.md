@@ -60,7 +60,7 @@ cd Firmware/
 touch gpio_testing.c
 ```
 
-![Directory Exploration and File Setup](./task4/gpio_test.png)
+![Directory Exploration and File Setup](./gpio_test.png)
 
 ---
 
@@ -77,7 +77,7 @@ Key observations from the file:
 - `wire [29:0] word_addr = mem_addr[31:2]` — 1-hot word address scheme
 - Memory is 1536 × 32-bit words = 6KB total RAM
 
-![Memory Module in riscv.v](./task4/nanoriscv.png)
+![Memory Module in riscv.v](./nanoriscv.png)
 
 ---
 
@@ -96,7 +96,7 @@ Key lines identified:
 
 This confirmed the pattern: each peripheral is selected by asserting `isIO & mem_wordaddr[IO_<PERIPH>_bit]`.
 
-![UART Address Decoding](./task4/uart_address.png)
+![UART Address Decoding](./uart_address.png)
 
 ---
 
@@ -230,7 +230,7 @@ Simulation timeout reached.
 SOC_sim_top.v:97: $finish called at 2000200000 (1ps)
 ```
 
-![Icarus Verilog Simulation Output](./task4/simulation_iverilog.png)
+![Icarus Verilog Simulation Output](./simulation_iverilog.png)
 
 ---
 
@@ -238,7 +238,7 @@ SOC_sim_top.v:97: $finish called at 2000200000 (1ps)
 
 The resulting `.vcd` trace (`gpio_sim.vcd`) was loaded into GTKWave to visually confirm the bus-level transactions at the signal level.
 
-![GTKWave Waveform](./task4/GTKWaveform.png)
+![GTKWave Waveform](./GTKWaveform.png)
 
 **Validation Takeaways:**
 
