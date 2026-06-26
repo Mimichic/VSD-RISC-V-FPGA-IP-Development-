@@ -262,5 +262,5 @@ Extending from a single-register IP to a multi-register peripheral required only
 
 ## References
 
-- [vsd-riscv2 Repository
-- [vsdfpga_labs Repository
+- vsd-riscv2 Repository
+- vsdfpga_labs Repository
