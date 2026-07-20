@@ -18,7 +18,8 @@ This repository documents the hands-on tasks completed as part of the VSD FPGA I
 | Task 3 | Environment Setup and RISC-V Reference Bring-Up | [→ Go to Task 3](#task-3--environment-setup-and-risc-v-reference-bring-up-github-codespace) |
 | Task 4 | Design and Integrate a Memory-Mapped GPIO IP | [→ Go to Task 4](./task4/README.md) |
 | Task 5 | Multi-Register GPIO IP with Software Control | [→ Go to Task 5](./task5/README.md) |
-| Task 6 (IP) | PWM IP — Single-Channel Pulse Width Modulator | [→ Go to Task 6](./ip/pwm_ip/README.md) |
+| Task 6 | PWM IP — Design, Integration and Simulation | [→ Go to Task 6](./ip/pwm/README.md) |
+| Task 7 | PWM IP — Commercial-Grade Documentation | [→ Go to Task 7](./ip/pwm/docs/IP_User_Guide.md) |
 
 ---
 
