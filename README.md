@@ -714,6 +714,39 @@ bbl loader
 ```
 
 ---
+
+## Understanding Check
+
+**Q1. Where is the RISC-V program located in the `vsd-riscv2` repository?**
+
+The reference RISC-V C program is located at `vsd-riscv2/samples/sum1ton.c`. Additional files in the same directory include `load.S` (assembly loader), `Makefile`, and `1ton_custom.c`.
+
+---
+
+**Q2. How is the program compiled and loaded into memory?**
+
+The program is compiled using `riscv64-unknown-elf-gcc`, which cross-compiles the C source into a RISC-V ELF binary:
+```bash
+riscv64-unknown-elf-gcc -o sum1ton.o sum1ton.c
+```
+The binary is then loaded into Spike's simulated memory via the proxy kernel (`pk`), which handles ELF loading and basic syscalls such as `printf` on behalf of the program:
+```bash
+spike pk sum1ton.o
+```
+
+---
+
+**Q3. How does the RISC-V core access memory and memory-mapped IO?**
+
+The RISC-V core accesses memory through standard load/store instructions (`lw`, `sw`, `ld`, `sd`) targeting a flat simulated address space managed by Spike. Memory-mapped IO is handled by the proxy kernel (`pk`), which intercepts system calls via `ecall` and maps them to host OS operations. On real FPGA hardware, memory-mapped IO is accessed through dedicated address ranges wired to peripheral registers in the SoC interconnect.
+
+---
+
+**Q4. Where would a new FPGA IP block logically integrate in this system?**
+
+A new FPGA IP block would integrate at the SoC interconnect level — connected to the RISC-V core's memory bus via a memory-mapped register interface at a dedicated address range. The RISC-V core configures and communicates with it through standard load/store instructions. The `vsdfpga_labs` repository provides the reference SoC structure into which new IP blocks are added, as demonstrated in Tasks 4 and 5.
+
+
 ---
 
 ## References
